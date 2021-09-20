@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Savings</title>
+    <style>
+
+    </style>
+</head>
+<body>
+    <header>
+
+    </header>
+    <main>
+        <div class="chart">
+            <div class="option-panel">
+                <input id="sum" type="text" placeholder="Сумма">
+                <input id="rate" type="text" placeholder="Процентная ставка, %">
+                <input id="term" type="text" placeholder="Срок">
+                <button id="btn">Рассчитать</button>
+           </div>
+           <div id="chart"></div>
+        </div>
+        
+    </main>
+    <footer>
+
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js" integrity="sha512-FJ2OYvUIXUqCcPf1stu+oTBlhn54W0UisZB/TNrZaVMHHhYvLBV9jMbvJYtvDe5x/WVaoXZ6KB+Uqe5hT2vlyA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var sumInput, termInput, rateInput, chart, btn;
+
+        window.onload = function() {
+            chart = new CanvasJS.Chart("chart", {
+                data: [{
+                    type: "line",
+                    dataPoints: []
+                }]
+            });
+            chart.render();
+            sumInput = document.getElementById("sum");
+            termInput = document.getElementById("term");
+            rateInput = document.getElementById("rate");
+            document.getElementById("btn").addEventListener('click', btnHandler);
+        }
+        
+        function btnHandler() {
+            let sum = +sumInput.value;
+            let rate = +rateInput.value;
+            let term = +termInput.value;
+            try {
+                updateChart(sum, rate, term);
+            } catch (error) {
+                alert(error);
+            }
+            
+        }
+
+        function updateChart(sum, rate, term) {
+            Array.from(arguments).forEach(e => {
+                if (!e || e < 1) {
+                    throw "Ошибка ввода. Знаxение долно быть чусловым и больше нуля";
+                }
+            });
+
+            const data = [];
+            let buffer = sum;
+            for (let i = 0; i < term; i++) {
+                data.push({x: i, y: buffer});
+                buffer += buffer * rate / 100;
+            }
+            chart.options.data[0].dataPoints = data;
+            chart.render();
+        }
+    </script>
+</body>
+</html>
